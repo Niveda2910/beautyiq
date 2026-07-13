@@ -1,0 +1,9 @@
+venv/
+data/raw/
+data/processed/
+.kaggle/
+*.parquet
+*.zip
+*.csv
+__pycache__/
+.env
