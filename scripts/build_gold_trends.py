@@ -1,6 +1,6 @@
 import pandas as pd
 import re
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, ENGLISH_STOP_WORDS
 from sklearn.decomposition import NMF
 
 PROCESSED_DIR = "data/processed"
@@ -46,14 +46,15 @@ print("Saved gold_ingredient_trends.parquet")
 # =========================================================
 # PART 2: Data-driven topic modeling (TF-IDF + NMF)
 # =========================================================
-N_TOPICS = 10
+N_TOPICS = 7
 
+custom_stop_words = list(ENGLISH_STOP_WORDS) + ["love", "absolutely", "amazing", "great", "good", "really", "product", "products", "definitely", "highly", "recommend"]
 vectorizer = TfidfVectorizer(
-    max_df=0.9, min_df=10, stop_words="english", ngram_range=(1, 2), max_features=5000
+    max_df=0.9, min_df=10, stop_words=custom_stop_words, ngram_range=(1, 2), max_features=5000
 )
 tfidf = vectorizer.fit_transform(df["review_text"])
 
-nmf = NMF(n_components=N_TOPICS, random_state=42, max_iter=300)
+nmf = NMF(n_components=N_TOPICS, random_state=42, max_iter=1000)
 topic_weights = nmf.fit_transform(tfidf)
 df["topic_id"] = topic_weights.argmax(axis=1)
 
